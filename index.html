@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA na Medicina: O Método da Escalada - UNCISAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Configurações de Tipografia e Layout -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.8;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, h4, .serif {
+            font-family: 'Merriweather', serif;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1e40af 0%, #0891b2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Efeito de Vidro para a Navegação */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        /* Caixas de Destaque */
+        .concept-box {
+            background-color: #f0f9ff;
+            border-left: 5px solid #0284c7;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .context-box {
+            background-color: #f0fdf4; /* Emerald 50 */
+            border: 1px solid #bbf7d0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            border-left: 5px solid #dc2626;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .summary-box {
+            background-color: #fffbeb; /* Amber 50 */
+            border: 1px solid #fcd34d;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        /* Botão de Cópia */
+        .prompt-container {
+            position: relative;
+            background: #1e293b;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .prompt-header {
+            background: #0f172a;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+        .prompt-content {
+            padding: 1.5rem;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+        /* Linha do Tempo */
+        .timeline-item {
+            position: relative;
+            padding-left: 3.5rem;
+            padding-bottom: 3rem;
+            border-left: 3px solid #cbd5e1;
+        }
+        .timeline-item:last-child {
+            border-left: 3px solid transparent;
+            padding-bottom: 0;
+        }
+        .timeline-icon {
+            position: absolute;
+            left: -1.6rem;
+            top: 0;
+            width: 3.2rem;
+            height: 3.2rem;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+        /* Cores Específicas para Níveis na Timeline */
+        .timeline-item.lvl-1 .timeline-icon { border-color: #60a5fa; color: #2563eb; background: #eff6ff; } /* 5 anos - Azul */
+        .timeline-item.lvl-2 .timeline-icon { border-color: #22d3ee; color: #0891b2; background: #ecfeff; } /* 10 anos - Ciano */
+        .timeline-item.lvl-3 .timeline-icon { border-color: #2dd4bf; color: #0d9488; background: #f0fdfa; } /* 15 anos - Teal */
+        .timeline-item.lvl-4 .timeline-icon { border-color: #818cf8; color: #4f46e5; background: #eef2ff; } /* Calouro - Indigo */
+        .timeline-item.lvl-5 .timeline-icon { border-color: #34d399; color: #059669; background: #ecfdf5; } /* Generalista - Verde */
+        .timeline-item.lvl-6 .timeline-icon { border-color: #a78bfa; color: #7c3aed; background: #f5f3ff; } /* Mestrado - Roxo */
+        .timeline-item.lvl-7 .timeline-icon { border-color: #94a3b8; color: #475569; background: #f8fafc; } /* Doutorado - Slate */
+
+        /* Estilo para os Tópicos Feynman */
+        .feynman-step {
+            transition: all 0.3s ease;
+        }
+        .feynman-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Garantia de Clique nos Links */
+        a {
+            position: relative;
+            z-index: 20;
+        }
+
+    </style>
+</head>
+<body class="antialiased text-slate-700">
+
+    <!-- HERO SECTION -->
+    <header class="min-h-screen flex flex-col justify-center items-center text-center px-4 bg-white relative overflow-hidden border-b border-slate-200">
+        <!-- Fundo decorativo (pointer-events-none para não bloquear cliques) -->
+        <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#2563eb_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" style="z-index: 0;"></div>
+        
+        <div class="relative z-10 max-w-5xl animate-fade-in py-12 w-full">
+            <!-- Logo UNCISAL -->
+            <div class="flex flex-col items-center mb-8 gap-2">
+                <div class="w-24 h-24 flex items-center justify-center mb-2">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Bras%C3%A3o_da_UNCISAL.png" alt="Brasão UNCISAL" class="w-full h-full object-contain">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-slate-900 text-2xl tracking-widest uppercase mb-1">UNCISAL</span>
+                    <span class="text-xs font-bold text-blue-700 tracking-wide uppercase bg-blue-100 px-4 py-1.5 rounded-full mx-auto">Disciplina de Pesquisa em Ciências da Saúde</span>
+                </div>
+            </div>
+           
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-8 text-slate-900 leading-tight">
+                A Anatomia do <br><span class="gradient-text">Conhecimento Médico</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto font-light serif leading-relaxed">
+                Um guia definitivo para dominar a complexidade médica através da Inteligência Artificial, fundamentado na Técnica Feynman e no Aprendizado em Espiral.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-5 justify-center items-center mb-16 relative z-50">
+                <a href="#resumo" class="inline-flex items-center gap-3 bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    Ler o Ebook <i class="fas fa-book-open"></i>
+                </a>
+            </div>
+
+            <!-- CURADORIA E METADADOS -->
+            <div class="border-t border-slate-200 pt-8 max-w-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 relative z-50">
+                <!-- Esquerda: Curadoria -->
+                <div class="text-center md:text-left">
+                    <div class="text-sm text-slate-500 font-semibold uppercase tracking-wide mb-2">Curadoria Acadêmica</div>
+                    <div class="font-serif text-lg text-slate-800 font-bold">Prof. Aldemar Araujo Castro</div>
+                    
+                    <!-- Link Instagram -->
+                    <a href="https://instagram.com/aldemararaujo" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-bold text-sm transition mt-2 hover:underline cursor-pointer">
+                        <i class="fab fa-instagram text-xl"></i> <span>@aldemararaujo</span>
+                    </a>
+                </div>
+
+                <!-- Direita: Metadados -->
+                <div class="text-center md:text-right bg-slate-50 p-4 rounded-lg border border-slate-100 shadow-sm">
+                    <div class="grid grid-cols-2 gap-x-8 gap-y-1 text-xs text-slate-500 font-mono">
+                        <span class="text-right font-bold text-slate-400">Criação:</span> <span>01/01/2026</span>
+                        <span class="text-right font-bold text-slate-400">Atualização:</span> <span>02/01/2026</span>
+                        <span class="text-right font-bold text-slate-400">Versão:</span> <span>2.8</span>
+                        <span class="text-right font-bold text-slate-400">Palavras:</span> <span>~2500</span>
+                        <span class="text-right font-bold text-slate-400">Tempo de leitura:</span> <span>~13 min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-col lg:flex-row max-w-7xl mx-auto relative">
+        
+        <!-- SIDEBAR DE NAVEGAÇÃO -->
+        <nav class="hidden lg:block w-72 p-8 sticky top-0 h-screen overflow-y-auto glass-nav z-30">
+            <h3 class="font-bold text-slate-900 mb-8 text-xs uppercase tracking-wider border-b pb-4">Sumário</h3>
+            <ul class="space-y-2 text-slate-600 font-medium text-sm">
+                <li><a href="#resumo" class="block py-2 px-3 rounded-lg hover:bg-amber-50 hover:text-amber-700 transition"><i class="fas fa-file-alt w-6 text-slate-400"></i> Resumo</a></li>
+                <li><a href="#introducao" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-home w-6 text-slate-400"></i> Introdução</a></li>
+                <li><a href="#fundamentacao" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-brain w-6 text-slate-400"></i> Fundamentação Teórica</a></li>
+                <li><a href="#estrategia1" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-layer-group w-6 text-slate-400"></i> Estratégia 1: Escalada</a></li>
+                <li><a href="#estrategia2" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-search-plus w-6 text-slate-400"></i> Estratégia 2: Busca</a></li>
+                <li><a href="#ferramentas" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-laptop-code w-6 text-slate-400"></i> Ferramentas de IA</a></li>
+                <li><a href="#exemplo" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-stethoscope w-6 text-slate-400"></i> Estudo de Caso</a></li>
+                <li><a href="#conclusao" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-lightbulb w-6 text-slate-400"></i> Considerações Finais</a></li>
+                <li><a href="#referencias" class="block py-2 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition"><i class="fas fa-quote-right w-6 text-slate-400"></i> Referências</a></li>
+            </ul>
+        </nav>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="flex-1 p-6 md:p-12 lg:p-20 bg-white relative z-10">
+
+            <!-- RESUMO -->
+            <section id="resumo" class="mb-24 scroll-mt-24">
+                <h2 class="text-4xl font-bold text-slate-900 mb-8 serif">Resumo</h2>
+                
+                <div class="summary-box">
+                    <p class="text-slate-700 text-lg leading-relaxed font-serif italic">
+                        "Transforme o estudo médico ao integrar Inteligência Artificial com a Técnica Feynman e o Aprendizado em Espiral. O método ensina o aluno a não apenas consumir informação, mas a estruturá-la através de duas estratégias: a 'Escalada de Complexidade', que evolui um conceito em sete níveis cognitivos (do lúdico ao doutorado), e a 'Busca Profunda', focada na validação científica contra alucinações. É um manual essencial para desenvolver raciocínio clínico crítico, segurança diagnóstica e a habilidade de usar a IA como um copiloto eficaz na medicina baseada em evidências."
+                    </p>
+                </div>
+            </section>
+
+            <!-- 1. INTRODUÇÃO -->
+            <section id="introducao" class="mb-24 scroll-mt-24">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs mb-2 block">Capítulo 1</span>
+                <h2 class="text-4xl font-bold text-slate-900 mb-8 serif">O Novo Paradigma do Estudo Médico</h2>
+                
+                <!-- Aumento de Espaçamento entre parágrafos (space-y-8) -->
+                <div class="prose prose-lg text-slate-600 max-w-none space-y-8">
+                    <p>
+                        Bem-vindo à disciplina de <strong>Pesquisa em Ciência da Saúde</strong>. Estamos vivendo um momento de inflexão na história da medicina. Até recentemente, a formação médica era baseada quase exclusivamente na acumulação de informações na memória de longo prazo. O "bom aluno" era aquele que decorava mais rodapés de livros.
+                    </p>
+                    <p>
+                        Hoje, em 2026, a informação é ubíqua e instantânea. O desafio mudou. Não se trata mais de <em>acumular</em> dados, mas de <strong>curar, validar e estruturar</strong> o conhecimento. A Inteligência Artificial (IA) Generativa não é apenas uma ferramenta de busca; ela é um simulador cognitivo capaz de acelerar seu aprendizado, se usada com método.
+                    </p>
+                    <p>
+                        Neste ebook, não vamos ensinar você a "pedir para a IA fazer o trabalho". Vamos ensinar você a usar a IA para treinar o seu cérebro a pensar como um médico cientista. Apresentaremos duas estratégias complementares:
+                    </p>
+                    <ul class="list-none space-y-4 pl-0">
+                        <li class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                            <span class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</span>
+                            <div>
+                                <strong class="text-slate-900 block">A Escalada de Complexidade</strong>
+                                Para construir o entendimento conceitual sólido através de 7 níveis cognitivos.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                            <span class="bg-emerald-100 text-emerald-700 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</span>
+                            <div>
+                                <strong class="text-slate-900 block">A Busca Profunda (Deep Research)</strong>
+                                Para a validação rigorosa baseada em evidências (Cochrane, Guidelines).
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 2. FUNDAMENTAÇÃO TEÓRICA -->
+            <section id="fundamentacao" class="mb-24 scroll-mt-24">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs mb-2 block">Capítulo 2</span>
+                <h2 class="text-4xl font-bold text-slate-900 mb-8 serif">Fundamentação Pedagógica</h2>
+                
+                <div class="prose prose-lg text-slate-600 max-w-none">
+                    <p>
+                        Por que nossa estratégia funciona? Ela não foi inventada do nada. Ela se baseia em dois pilares sólidos da psicologia educacional e da física teórica. Entender isso fará você confiar no processo.
+                    </p>
+
+                    <h3 class="text-2xl text-slate-800 mt-12 mb-4 serif">1. O Aprendizado em Espiral (Jerome Bruner)</h3>
+                    <p>
+                        O psicólogo cognitivo <strong>Jerome Bruner</strong> propôs, na década de 1960, que qualquer assunto pode ser ensinado a qualquer pessoa, em qualquer idade, desde que adaptado à sua forma de compreensão.
+                    </p>
+                    <div class="concept-box">
+                        <h4 class="font-bold text-blue-900 mb-2">O Conceito da Espiral</h4>
+                        <p class="text-sm">
+                            No "Currículo em Espiral", o aluno revisita os mesmos tópicos várias vezes ao longo do tempo. A cada visita, o nível de complexidade e abstração aumenta.
+                        </p>
+                        <ul class="list-disc list-inside mt-2 text-sm">
+                            <li><strong>Visita 1 (Básico):</strong> Entendimento intuitivo (ex: o coração é uma bomba).</li>
+                            <li><strong>Visita 2 (Intermediário):</strong> Estrutura formal (ex: câmaras cardíacas e válvulas).</li>
+                            <li><strong>Visita 3 (Avançado):</strong> Detalhes complexos (ex: potenciais de ação e eletrofisiologia).</li>
+                        </ul>
+                    </div>
+                    <p>
+                        Nossa estratégia de usar a IA para explicar o mesmo tema para uma criança, um adolescente, um calouro e um doutorando é a aplicação prática e acelerada da teoria de Bruner. Você força seu cérebro a ver a "espiral" completa em minutos, criando conexões neurais mais fortes.
+                    </p>
+
+                    <h3 class="text-2xl text-slate-800 mt-12 mb-6 serif">2. A Técnica Feynman</h3>
+                    <p>
+                        O físico ganhador do Nobel, <strong>Richard Feynman</strong>, era famoso por sua capacidade de explicar tópicos densos de física quântica em linguagem simples. A Técnica Feynman consiste em quatro passos fundamentais:
+                    </p>
+                    
+                    <!-- 4 Passos Feynman Visualizados em Tópicos -->
+                    <div class="grid sm:grid-cols-2 gap-4 mt-6">
+                        <div class="feynman-step bg-slate-50 p-5 rounded-lg border border-slate-200 flex items-start gap-3">
+                            <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 shadow-sm">1</span>
+                            <div>
+                                <h5 class="font-bold text-slate-900">Escolha um conceito</h5>
+                                <p class="text-sm text-slate-600 leading-snug">Defina claramente o tópico que você deseja dominar.</p>
+                            </div>
+                        </div>
+
+                        <div class="feynman-step bg-slate-50 p-5 rounded-lg border border-slate-200 flex items-start gap-3">
+                            <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 shadow-sm">2</span>
+                            <div>
+                                <h5 class="font-bold text-slate-900">Ensine-o para uma criança</h5>
+                                <p class="text-sm text-slate-600 leading-snug">Use linguagem simples e evite jargões técnicos complexos.</p>
+                            </div>
+                        </div>
+
+                        <div class="feynman-step bg-slate-50 p-5 rounded-lg border border-slate-200 flex items-start gap-3">
+                            <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 shadow-sm">3</span>
+                            <div>
+                                <h5 class="font-bold text-slate-900">Identifique suas falhas</h5>
+                                <p class="text-sm text-slate-600 leading-snug">Se travou na explicação, é ali que está sua falta de compreensão.</p>
+                            </div>
+                        </div>
+
+                        <div class="feynman-step bg-slate-50 p-5 rounded-lg border border-slate-200 flex items-start gap-3">
+                            <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold shrink-0 shadow-sm">4</span>
+                            <div>
+                                <h5 class="font-bold text-slate-900">Revise e simplifique</h5>
+                                <p class="text-sm text-slate-600 leading-snug">Reescreva a explicação até que fique cristalina.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mt-8">
+                        Ao pedir para o Gemini ou ChatGPT explicar "para uma criança de 5 anos", você está aplicando o <strong>Passo 2 de Feynman</strong>. Se a IA usar um jargão complicado nessa fase, você saberá que a explicação está ruim. Se ela usar uma metáfora perfeita, você ganha uma ferramenta poderosa para explicar isso aos seus futuros pacientes.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 3. ESTRATÉGIA 1: ESCALADA -->
+            <section id="estrategia1" class="mb-24 scroll-mt-24">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs mb-2 block">Capítulo 3</span>
+                <h2 class="text-4xl font-bold text-slate-900 mb-8 serif">Estratégia 1: A Escalada de 7 Níveis</h2>
+                
+                <p class="text-lg text-slate-600 mb-8">
+                    Esta técnica consiste em dissecar um tema médico pedindo para a IA assumir 7 personas diferentes sequencialmente. Isso revela a "anatomia" da informação.
+                </p>
+
+                <!-- Prompt Box -->
+                <div class="prompt-container">
+                    <div class="prompt-header">
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wider"><i class="fas fa-terminal mr-2"></i> Prompt Mestre</span>
+                        <button onclick="copyToClipboard('prompt1')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded transition flex items-center gap-2 cursor-pointer relative z-50">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <div class="prompt-content" id="prompt1">Aja como um professor especialista em medicina. Explique o tema [INSERIR TEMA AQUI] para os seguintes públicos, em sequência, um após o outro:
+
+1. Criança de 5 anos (use metáforas lúdicas);
+2. Criança de 10 anos (lógica concreta);
+3. Adolescente de 15 anos (introdução à biologia/física);
+4. Calouro de Medicina (anatomia e fisiologia básica);
+5. Médico Generalista (foco na Atenção Primária/UBS e diagnóstico);
+6. Mestrando (metodologia e diretrizes clínicas);
+7. Doutorando (lacunas do conhecimento e controvérsias).</div>
+                </div>
+
+                <!-- Detalhamento dos Níveis (GRID COMPLETO) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-12">
+                    <!-- Nível 1 -->
+                    <div class="bg-white p-6 rounded-xl border border-blue-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-blue-100 p-2 rounded-lg text-blue-600"><i class="fas fa-child text-xl"></i></div>
+                            <h4 class="font-bold text-slate-800">1. Criança (5 anos)</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">O Teste da Metáfora. Se a IA não criar uma boa analogia aqui, o conceito é complexo demais ou a explicação falhou. A metáfora é a âncora da memória.</p>
+                    </div>
+
+                    <!-- Nível 2 -->
+                    <div class="bg-white p-6 rounded-xl border border-cyan-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-cyan-100 p-2 rounded-lg text-cyan-600"><i class="fas fa-gamepad text-xl"></i></div>
+                            <h4 class="font-bold text-slate-800">2. Criança (10 anos)</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">O Pensamento Concreto. A explicação deixa de ser mágica e passa a ser funcional ("como funciona"), mas sem jargões.</p>
+                    </div>
+
+                    <!-- Nível 3 -->
+                    <div class="bg-white p-6 rounded-xl border border-teal-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-teal-100 p-2 rounded-lg text-teal-600"><i class="fas fa-school text-xl"></i></div>
+                            <h4 class="font-bold text-slate-800">3. Adolescente (15 anos)</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">A Ponte Científica. Introduz conceitos de Biologia, Química e Física do ensino médio (pressão, células, gravidade).</p>
+                    </div>
+
+                    <!-- Nível 4 -->
+                    <div class="bg-white p-6 rounded-xl border border-indigo-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600"><i class="fas fa-user-md text-xl"></i></div>
+                            <h4 class="font-bold text-slate-800">4. Calouro de Medicina</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">A Base Acadêmica. Onde "dodói" vira "lesão tecidual". Validação da terminologia anatômica e fisiológica correta.</p>
+                    </div>
+
+                    <!-- Nível 5 -->
+                    <div class="bg-white p-6 rounded-xl border-l-4 border-l-emerald-500 border border-emerald-100 shadow-sm hover:shadow-md transition bg-emerald-50/30">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-emerald-100 p-2 rounded-lg text-emerald-600"><i class="fas fa-briefcase-medical text-xl"></i></div>
+                            <h4 class="font-bold text-emerald-900">5. Médico Generalista</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">A Realidade do SUS. Foco no paciente, diagnóstico, critérios de encaminhamento e manejo na Atenção Primária.</p>
+                    </div>
+
+                    <!-- Nível 6 -->
+                    <div class="bg-white p-6 rounded-xl border border-purple-200 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-purple-100 p-2 rounded-lg text-purple-600"><i class="fas fa-flask text-xl"></i></div>
+                            <h4 class="font-bold text-slate-800">6. Mestrando</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">O Olhar Metodológico. Diretrizes clínicas, revisões sistemáticas e aplicação baseada em evidências.</p>
+                    </div>
+
+                    <!-- Nível 7 -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-300 shadow-sm hover:shadow-md transition xl:col-span-3">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-slate-100 p-2 rounded-lg text-slate-600"><i class="fas fa-graduation-cap text-xl"></i></div>
+                            <h4 class="font-bold text-slate-800">7. Doutorando</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">A Fronteira do Conhecimento. Aqui não queremos certezas, queremos dúvidas. O que a ciência <em>ainda não sabe</em>? Quais estudos contradizem o senso comum? É aqui que nasce a pesquisa.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. ESTRATÉGIA 2: BUSCA PROFUNDA -->
+            <section id="estrategia2" class="mb-24 scroll-mt-24">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs mb-2 block">Capítulo 4</span>
+                <h2 class="text-4xl font-bold text-slate-900 mb-8 serif">Estratégia 2: A Busca Profunda</h2>
+                
+                <div class="warning-box">
+                    <h4 class="text-red-700 font-bold uppercase text-sm mb-2"><i class="fas fa-exclamation-triangle"></i> Atenção: O Perigo da Alucinação</h4>
+                    <p class="text-sm text-slate-700">
+                        Modelos de linguagem são "papagaios estocásticos". Eles completam frases com base em probabilidade, não em verdade. Nos níveis acadêmicos (Mestrado/Doutorado), a IA pode inventar citações (ex: "Silva et al., 2024") que parecem reais, mas não existem. Chamamos isso de <strong>Alucinação</strong> ou Confabulação.
+                    </p>
+                </div>
+
+                <p class="text-lg text-slate-600 mb-6">
+                    A estratégia de Busca Profunda serve para <strong>auditar</strong> o que a IA disse na estratégia anterior. Você muda o modo da IA de "Criativo" para "Investigativo".
+                </p>
+
+                <!-- Prompt Box -->
+                <div class="prompt-container">
+                    <div class="prompt-header">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider"><i class="fas fa-search mr-2"></i> Prompt de Validação</span>
+                        <button onclick="copyToClipboard('prompt2')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded transition flex items-center gap-2 cursor-pointer relative z-50">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <div class="prompt-content" id="prompt2">Agora, realize uma busca profunda na web sobre o tema [INSERIR TEMA].
+1. Busque por Diretrizes/Guidelines oficiais (Brasil e Internacionais) e Revisões Sistemáticas da Cochrane dos últimos 5 anos.
+2. Valide as afirmações feitas no nível "Doutorado" anterior.
+3. Forneça os links diretos para as fontes.
+4. Liste 3 divergências encontradas na literatura.</div>
+                </div>
+            </section>
+
+            <!-- 5. FERRAMENTAS -->
+            <section id="ferramentas" class="mb-24 scroll-mt-24">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8 serif">Ferramentas Essenciais</h2>
+                <div class="grid md:grid-cols-2 gap-6 relative z-20">
+                    <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer" class="group relative overflow-hidden bg-white border border-slate-200 rounded-2xl p-8 hover:border-blue-500 hover:shadow-xl transition-all duration-300 block cursor-pointer">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition transform group-hover:scale-110">
+                            <i class="fab fa-google text-8xl text-blue-600"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 text-2xl mb-4 group-hover:scale-110 transition">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">Google Gemini</h3>
+                            <p class="text-slate-600 mb-6">Ideal para dados em tempo real e integração com o Google Scholar.</p>
+                            <span class="text-blue-600 font-bold text-sm uppercase tracking-wider group-hover:underline">Acessar Gemini &rarr;</span>
+                        </div>
+                    </a>
+
+                    <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer" class="group relative overflow-hidden bg-white border border-slate-200 rounded-2xl p-8 hover:border-emerald-500 hover:shadow-xl transition-all duration-300 block cursor-pointer">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition transform group-hover:scale-110">
+                            <i class="fas fa-robot text-8xl text-emerald-600"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <div class="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 text-2xl mb-4 group-hover:scale-110 transition">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-2">ChatGPT (OpenAI)</h3>
+                            <p class="text-slate-600 mb-6">Poderoso em raciocínio lógico. Use o modo "Search" para referências.</p>
+                            <span class="text-emerald-600 font-bold text-sm uppercase tracking-wider group-hover:underline">Acessar ChatGPT &rarr;</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. ESTUDO DE CASO COMPLETO -->
+            <section id="exemplo" class="mb-24 scroll-mt-24">
+                <span class="text-blue-600 font-bold tracking-widest uppercase text-xs mb-2 block">Capítulo 5</span>
+                <h2 class="text-4xl font-bold text-slate-900 mb-8 serif">Estudo de Caso: Bota de Unna</h2>
+                
+                <!-- CONTEXTO CLÍNICO (NOVO) -->
+                <div class="context-box relative">
+                    <div class="absolute -top-4 left-6 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        <i class="fas fa-info-circle mr-1"></i> Contexto Clínico
+                    </div>
+                    <h3 class="text-lg font-bold text-emerald-900 mb-3 mt-1">O que é a Doença Venosa Crônica?</h3>
+                    <p class="text-emerald-800 text-sm leading-relaxed mb-3">
+                        A Doença Venosa Crônica (DVC) ocorre quando as veias das pernas têm dificuldade em bombear o sangue de volta ao coração (insuficiência valvular), gerando <strong>hipertensão venosa</strong>. Com o tempo, essa pressão elevada danifica a pele e os tecidos, podendo causar a temida Úlcera Venosa.
+                    </p>
+                    <p class="text-emerald-800 text-sm leading-relaxed">
+                        A <strong>Bota de Unna</strong> é uma terapia compressiva inelástica. Pense nela como um "molde" semirrígido. Ela não aperta a perna sozinha (repouso); ela cria uma parede resistente contra a qual o músculo da panturrilha "bate" ao contrair durante a caminhada, forçando o sangue a subir. Por isso, a Bota de Unna só funciona bem se o paciente caminhar.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 lg:p-12 shadow-sm">
+                    <p class="text-lg text-slate-600 mb-12 italic border-l-4 border-slate-300 pl-4">
+                        "Observe como a linguagem e o foco mudam nos 7 níveis abaixo. Na criança, o foco é o medo e a sensação. No generalista, é o procedimento e a segurança. No doutorando, é a dúvida científica."
+                    </p>
+
+                    <!-- Timeline Nível 1 -->
+                    <div class="timeline-item lvl-1 active">
+                        <div class="timeline-icon"><i class="fas fa-child"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">1. Criança (5 anos)</h4>
+                        <p class="mt-2 text-slate-600">"Imagine que a perna da vovó tem um dodói que precisa de um abraço bem forte para sarar. A Bota de Unna é uma meinha especial, molhada com remédio, que seca e vira uma 'casca' dura, igual a um gesso de super-herói. Ela aperta a perna para ajudar o sangue a subir de volta para o coração."</p>
+                    </div>
+
+                    <!-- Timeline Nível 2 -->
+                    <div class="timeline-item lvl-2 active">
+                        <div class="timeline-icon"><i class="fas fa-gamepad"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">2. Criança (10 anos)</h4>
+                        <p class="mt-2 text-slate-600">"É um curativo feito de uma faixa com uma pasta branca (zinco). Quando seca, fica firme. Diferente de um band-aid molengo, ela funciona como uma parede rígida: quando a pessoa anda, o músculo da perna incha, bate nessa parede e empurra o sangue para cima, como se estivesse apertando uma pasta de dente."</p>
+                    </div>
+
+                    <!-- Timeline Nível 3 -->
+                    <div class="timeline-item lvl-3 active">
+                        <div class="timeline-icon"><i class="fas fa-school"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">3. Adolescente (15 anos)</h4>
+                        <p class="mt-2 text-slate-600">"A Bota de Unna trata feridas causadas por má circulação usando princípios de Física. Ela cria uma barreira inelástica (que não estica). Quando você caminha, a contração muscular aumenta a pressão interna. Como a bota não cede, essa pressão força o sangue venoso a subir contra a gravidade, reduzindo o inchaço que impede a cicatrização."</p>
+                    </div>
+
+                    <!-- Timeline Nível 4 -->
+                    <div class="timeline-item lvl-4 active">
+                        <div class="timeline-icon"><i class="fas fa-user-md"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">4. Calouro de Medicina</h4>
+                        <p class="mt-2 text-slate-600">"Introdução da terminologia: <strong>Insuficiência Venosa Crônica</strong> e suporte à bomba muscular da panturrilha. A pasta contém óxido de zinco (ação cicatrizante e anti-inflamatória) e glicerina. É classificada como uma terapia compressiva inelástica, gerando alta pressão de trabalho (durante a deambulação) e baixa pressão de repouso."</p>
+                    </div>
+
+                    <!-- Timeline Nível 5 -->
+                    <div class="timeline-item lvl-5 active">
+                        <div class="timeline-icon"><i class="fas fa-briefcase-medical"></i></div>
+                        <h4 class="text-xl font-bold text-emerald-800">5. Médico Generalista (UBS)</h4>
+                        <p class="mt-2 text-slate-600">"Foco na prática do SUS. A Bota de Unna é padrão ouro para úlceras venosas não infectadas na Atenção Primária devido ao baixo custo. <strong>Ponto Crítico de Segurança:</strong> Obrigatório palpar pulsos (pedioso e tibial posterior) antes da aplicação. Se houver suspeita de doença arterial (ITB < 0,8), a compressão é contraindicada. Troca semanal ou antes se houver saturação por exsudato."</p>
+                    </div>
+
+                    <!-- Timeline Nível 6 -->
+                    <div class="timeline-item lvl-6 active">
+                        <div class="timeline-icon"><i class="fas fa-flask"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">6. Mestrando</h4>
+                        <p class="mt-2 text-slate-600">"Análise comparativa. Embora sistemas multicamadas (4-layer) apresentem evidência de cicatrização levemente mais rápida em revisões da Cochrane, a Bota de Unna mantém superioridade em custo-efetividade em cenários de recursos limitados. A eficácia é altamente operador-dependente (técnica em espiral vs. figura em oito) para garantir o gradiente de pressão decrescente correto."</p>
+                    </div>
+
+                    <!-- Timeline Nível 7 -->
+                    <div class="timeline-item lvl-7 active">
+                        <div class="timeline-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h4 class="text-xl font-bold text-slate-900">7. Doutorando</h4>
+                        <p class="mt-2 text-slate-600">"Estado da arte e lacunas. Discussão crítica sobre o fenômeno da <strong>histerese</strong>: a perda significativa de pressão sub-bandagem nas primeiras 24h devido à redução rápida do edema, o que pode exigir trocas mais frequentes que o protocolo padrão. Investiga-se o uso de materiais híbridos (rigidez ajustável) e a correlação entre a 'rigidez estática' (Static Stiffness Index) e o desfecho de fechamento da úlcera."</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. CONSIDERAÇÕES FINAIS -->
+            <section id="conclusao" class="mb-24 scroll-mt-24">
+                <div class="bg-slate-900 rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                    
+                    <i class="fas fa-lightbulb text-6xl text-yellow-400 mb-6 relative z-10"></i>
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 serif relative z-10">O Médico é o Piloto</h2>
+                    <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed relative z-10">
+                        A IA não substitui o raciocínio clínico, ela o expande. O método da Escalada e da Busca Profunda treina você para ser cético, curioso e preciso.
+                        <br><br>
+                        Lembre-se: O paciente não procura um algoritmo. Ele procura um humano que saiba usar as melhores ferramentas disponíveis para cuidar dele.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 8. REFERÊNCIAS -->
+            <section id="referencias" class="border-t border-slate-200 pt-16">
+                <h3 class="text-2xl font-bold text-slate-900 mb-8">Referências Bibliográficas (Estilo Vancouver)</h3>
+                <ol class="list-decimal list-outside ml-6 space-y-4 text-sm text-slate-600 font-serif max-w-3xl">
+                    <li>Bruner JS. The Process of Education. Cambridge, MA: Harvard University Press, 1960.</li>
+                    <li>Feynman RP. "Surely You're Joking, Mr. Feynman!": Adventures of a Curious Character. New York: W. W. Norton & Company, 1985.</li>
+                    <li>O'Meara S, Cullum N, Nelson EA, Dumville JC. Compression for venous leg ulcers. Cochrane Database Syst Rev. 2012 Nov 14;11(11):CD000265.</li>
+                    <li>Sociedade Brasileira de Angiologia e de Cirurgia Vascular (SBACV). Diretrizes Brasileiras de Insuficiência Venosa Crônica. J Vasc Bras. 2019, 18:e20190131.</li>
+                    <li>Partsch H. The static stiffness index: a simple method to assess the elastic property of compression material in vivo. Dermatol Surg. 2005, 31(6):625-30.</li>
+                    <li>Mesko B. The Guide to the Future of Medicine: Technology and the Human Touch. Webicina Kft., 2014.</li>
+                </ol>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-slate-50 border-t border-slate-200 py-16 text-center">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="mb-6 flex justify-center">
+                 <i class="fas fa-university text-3xl text-slate-400"></i>
+            </div>
+            <p class="text-slate-500 font-medium mb-1">Universidade Estadual de Ciências da Saúde de Alagoas (UNCISAL)</p>
+            <p class="text-slate-400 text-sm mb-2">Maceió • Alagoas</p>
+            <p class="text-slate-400 text-xs mt-6 mb-8 uppercase tracking-wide">Disciplina de Pesquisa em Ciências da Saúde</p>
+            <div class="text-xs text-slate-300 font-mono">
+                © 2026 Guia de Estudos Médicos com IA v2.8
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts Funcionais -->
+    <script>
+        // Função Robusta de Cópia
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                const btn = document.querySelector(`button[onclick="copyToClipboard('${elementId}')"]`);
+                const originalHtml = btn.innerHTML;
+                
+                // Feedback visual
+                btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                btn.classList.remove('bg-blue-600', 'bg-emerald-600', 'hover:bg-blue-500', 'hover:bg-emerald-500');
+                btn.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('bg-green-600');
+                    if(elementId === 'prompt1') {
+                        btn.classList.add('bg-blue-600', 'hover:bg-blue-500');
+                    } else {
+                        btn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+                    }
+                }, 2500);
+            } catch (err) {
+                console.error('Erro ao copiar', err);
+                alert('Não foi possível copiar automaticamente. Por favor, selecione o texto e copie manualmente.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // Animação Simples de Fade-In ao carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            });
+
+            // Aplica animação nas seções principais
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('transition', 'duration-1000', 'opacity-0', 'translate-y-10');
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
